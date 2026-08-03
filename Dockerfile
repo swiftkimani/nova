@@ -8,6 +8,10 @@ RUN if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install --frozen-lock
 
 FROM node:22-alpine AS builder
 WORKDIR /app
+# Optionally mount the build under a path prefix (e.g. /nova for a
+# shared-domain deployment) — baked in at build time, read by next.config.ts.
+ARG NEXT_BASE_PATH=""
+ENV NEXT_BASE_PATH=$NEXT_BASE_PATH
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm run build; \

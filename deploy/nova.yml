@@ -1,0 +1,21 @@
+# Traefik dynamic (file-provider) config for the /nova path-prefixed route
+# on the existing dev.benardkimani.co.ke domain. Deployed alongside
+# goolang.yml (the companion Go boilerplate's router) on the same host, at
+# /root/infra/traefik/dynamic/nova.yml. Reuses the domain's existing TLS
+# cert — no separate certificate block needed here.
+http:
+  routers:
+    nova-frontend:
+      entryPoints:
+        - websecure
+      rule: Host(`dev.benardkimani.co.ke`) && PathPrefix(`/nova`)
+      service: nova-frontend
+      # Higher than goolang-frontend's default (bare Host rule) so /nova
+      # requests route here instead of falling through to the Go site.
+      priority: 10
+      tls: {}
+  services:
+    nova-frontend:
+      loadBalancer:
+        servers:
+          - url: http://nova:3000
