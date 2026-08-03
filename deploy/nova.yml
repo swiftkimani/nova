@@ -10,9 +10,14 @@ http:
         - websecure
       rule: Host(`dev.benardkimani.co.ke`) && PathPrefix(`/nova`)
       service: nova-frontend
-      # Higher than goolang-frontend's default (bare Host rule) so /nova
-      # requests route here instead of falling through to the Go site.
-      priority: 10
+      # goolang-frontend (in the sibling repo's goolang.yml) sets no explicit
+      # priority, so Traefik falls back to its rule-length default — which
+      # is NOT guaranteed to be lower than an arbitrary small number here.
+      # A low explicit priority (e.g. 10) can accidentally lose to that
+      # default, silently sending every /nova/* request to the Go site's SPA
+      # fallback instead (verified: it happens). Set unambiguously high
+      # instead of relying on comparing against an implicit default.
+      priority: 100
       tls: {}
   services:
     nova-frontend:
