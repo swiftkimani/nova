@@ -1,0 +1,10 @@
+{
+  "name": "create-nova-app",
+  "version": "1.0.0",
+  "description": "Scaffold a new Next.js project from the Nova boilerplate",
+  "main": "index.js",
+  "bin": {
+    "create-nova-app": "./index.js"
+  },
+  "license": "MIT"
+}
